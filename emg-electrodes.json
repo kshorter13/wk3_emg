@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-08-12T06:17:45.013Z",
+  "units": "m",
+  "sites": [
+    {
+      "id": "rectus_femoris",
+      "name": "Rectus femoris",
+      "abbr": "RF",
+      "desc": "On the vertical line from ASIS to the superior patella border, 50% of the way down; electrodes along the fibre direction.",
+      "a": {
+        "x": -0.12187634539232688,
+        "y": 0.6919167012834992,
+        "z": 0.05892947641256774,
+        "nx": -0.14987660176784384,
+        "ny": 0.008775634895377409,
+        "nz": 0.9886657637820309
+      },
+      "b": {
+        "x": -0.11501107185220152,
+        "y": 0.6546292200134068,
+        "z": 0.05884834503647263,
+        "nx": -0.3611700531028173,
+        "ny": -0.07453160282841424,
+        "nz": 0.9295166662957345
+      }
+    },
+    {
+      "id": "biceps_femoris",
+      "name": "Biceps femoris",
+      "abbr": "BF",
+      "desc": "Midpoint of the line between the ischial tuberosity and the lateral epicondyle of the tibia.",
+      "a": null,
+      "b": null
+    }
+  ],
+  "grounds": [
+    {
+      "id": "patella",
+      "name": "Patella",
+      "desc": "A common electrically neutral bony reference site for a ground/reference electrode.",
+      "position": {
+        "x": -0.08816852074418906,
+        "y": 0.4479761041059396,
+        "z": 0.020250267120852206,
+        "nx": -0.011014562951639884,
+        "ny": -0.005763011586653405,
+        "nz": 0.9999227305649355
+      }
+    }
+  ]
+}
