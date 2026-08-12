@@ -62,14 +62,13 @@ canvasHost.appendChild(labelRenderer.domElement);
 const controls = new OrbitControls(camera, labelRenderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.zoomSpeed = 0.6;
+// Note: zoomSpeed left at the Three.js default (1) — a lower value made
+// zoom feel very slow on Mac trackpads in Safari specifically, since Safari
+// delivers many more, finer-grained wheel events per gesture than Chrome.
 controls.target.set(0, 0.5, 0);
 camera.position.set(0.6, 0.8, 1.3);
-labelRenderer.domElement.addEventListener('wheel', () => {
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
-}, { passive: true });
+// Note: deliberately no forced render-on-wheel here — doubling render
+// workload during active scrolling stutters on Safari's WebGL pipeline.
 controls.update();
 
 scene.add(new THREE.HemisphereLight(0xf5f2ea, 0x1a1d24, 0.9));
@@ -154,8 +153,9 @@ function muscleColorFor(name) {
 }
 
 /* ======================================================================
-   TISSUE LAYER VISIBILITY — same idea as the editor: lets students hide
-   whole tissue categories (e.g. Bone, Bursa, Fascia) to declutter the view.
+   TISSUE LAYER VISIBILITY — read-only here: this viewer has no controls of
+   its own. It just reproduces whatever show/hide state the instructor set
+   in the editor, baked into emg-electrodes.json as `tissueVisible`.
 ====================================================================== */
 const TISSUE_LABELS = {
   muscle: 'Muscle', bone: 'Bone', cartilage: 'Cartilage', tendon: 'Tendon',
@@ -173,28 +173,11 @@ function tagTissueGroups(obj) {
   });
 }
 
-const tissueTogglesEl = document.getElementById('tissue-toggles');
-function buildTissueToggles() {
-  if (!tissueTogglesEl) return;
-  tissueTogglesEl.innerHTML = '';
-  Object.keys(TISSUE_LABELS).forEach((k) => {
-    if (!tissueGroups[k] || !tissueGroups[k].length) return;
-    const row = document.createElement('label');
-    row.className = 'toggle-row tissue-toggle-row';
-    row.innerHTML = `
-      <span>${TISSUE_LABELS[k]}</span>
-      <span class="switch">
-        <input type="checkbox" data-tissue="${k}" checked>
-        <span class="track"></span>
-      </span>
-    `;
-    tissueTogglesEl.appendChild(row);
-  });
-  tissueTogglesEl.querySelectorAll('[data-tissue]').forEach((input) => {
-    input.addEventListener('change', () => {
-      const t = input.dataset.tissue;
-      (tissueGroups[t] || []).forEach((mesh) => { mesh.visible = input.checked; });
-    });
+function applyTissueVisibility(map) {
+  if (!map) return;
+  Object.keys(map).forEach((k) => {
+    if (!(k in tissueGroups)) return;
+    tissueGroups[k].forEach((mesh) => { mesh.visible = !!map[k]; });
   });
 }
 
@@ -265,7 +248,6 @@ function loadModel() {
           clearWatchdogs();
           modelRoot.add(obj);
           tagTissueGroups(obj);
-          buildTissueToggles();
           frameModel(obj);
           hideLoading();
           loadData();
@@ -305,6 +287,7 @@ async function loadData() {
     const data = await res.json();
     SITES = Array.isArray(data.sites) ? data.sites : [];
     GROUNDS = Array.isArray(data.grounds) ? data.grounds : [];
+    applyTissueVisibility(data.tissueVisible);
 
     buildSheet();
 
