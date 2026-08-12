@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EMG Electrode Placement — Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+
+  <button id="sidebar-toggle-mobile" aria-label="Toggle site list">&#9776;</button>
+
+  <aside id="sidebar">
+    <div class="brand">
+      <span class="eyebrow">Surface EMG &middot; Electrode Placement</span>
+      <h1>EMG Electrode Viewer</h1>
+      <p>Bipolar sites &amp; ground electrode(s)</p>
+    </div>
+
+    <div class="legend-block">
+      <div class="legend-row"><span class="legend-swatch" style="background:#ffcd3c"></span>Bipolar pair (electrode A + B)</div>
+      <div class="legend-row"><span class="legend-swatch ground" style="background:#33d1c9"></span>Ground / reference electrode</div>
+    </div>
+
+    <div id="marker-sheet"></div>
+
+    <div id="sidebar-footer">
+      <div class="toggle-row">
+        <span>Show labels</span>
+        <label class="switch">
+          <input type="checkbox" id="labels-toggle" checked>
+          <span class="track"></span>
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <div id="viewport-wrap">
+    <div id="canvas-host"></div>
+
+    <div id="loading-overlay">
+      <div class="rig"></div>
+      <div class="status" id="loading-status">Loading materials&hellip;</div>
+    </div>
+
+    <div id="load-error">
+      <div class="box">
+        <h2>Couldn't load the model</h2>
+        <p>
+          This page loads the leg model over <code>fetch</code>, which browsers block when a page
+          is opened directly from disk (<code>file://</code>). Serve this folder instead, e.g. from
+          a terminal in this folder run <code>python3 -m http.server</code> and open
+          <code>http://localhost:8000</code>, or host the folder on GitHub Pages / your LMS.
+        </p>
+        <p id="load-error-detail" style="font-family: var(--font-mono); font-size: 12px; color: var(--swin-red);"></p>
+      </div>
+    </div>
+
+    <div id="no-landmarks-notice">No electrodes have been placed for this model yet — check back once your instructor has published a set.</div>
+
+    <div id="info-card">
+      <button class="close-btn" id="info-close" aria-label="Close">&#10005;</button>
+      <div class="region-tag" id="info-region"></div>
+      <h3 id="info-name"></h3>
+      <p id="info-desc"></p>
+      <div class="coords" id="info-coords"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
